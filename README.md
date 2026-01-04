@@ -53,7 +53,7 @@ Edit `.env` and add your API keys:
 ```
 OPENAI_API_KEY=your_openai_api_key_here
 GITHUB_TOKEN=your_github_token_here
-PORT=5000
+PORT=5001
 CLIENT_URL=http://localhost:3000
 ```
 
@@ -80,9 +80,7 @@ npm run client
 
 The application will be available at:
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:5000 (or 5001 if 5000 is occupied)
-
-**Note**: If port 5000 is already in use, the backend will automatically use port 5001. The frontend is configured to connect to port 5001 by default. You can change this in `client/src/config/api.js` or set the `REACT_APP_API_PORT` environment variable.
+- Backend API: http://localhost:5001
 
 #### Production Mode with Docker
 
@@ -94,10 +92,10 @@ docker-compose up --build
 2. Or build and run with Docker:
 ```bash
 docker build -t taskpilot-ai .
-docker run -p 5000:5000 --env-file .env taskpilot-ai
+docker run -p 5001:5001 --env-file .env taskpilot-ai
 ```
 
-The application will be available at http://localhost:5000
+The application will be available at http://localhost:5001
 
 ## API Endpoints
 
@@ -155,7 +153,7 @@ taskpilot-ai/
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `PORT` | Server port | No (default: 5000) |
+| `PORT` | Server port | No (default: 5001) |
 | `NODE_ENV` | Environment mode | No |
 | `OPENAI_API_KEY` | OpenAI API key | Yes |
 | `GITHUB_TOKEN` | GitHub personal access token | Optional |
@@ -188,12 +186,13 @@ taskpilot-ai/
 
 ## Troubleshooting
 
-### Port Conflicts
+### Port Configuration
 
-If port 5000 is occupied (common on macOS due to AirPlay), the backend will automatically use port 5001. The frontend is pre-configured to connect to port 5001. If you need to use a different port:
+The default backend port is **5001** (IANA service name: `commplex-link`). This port is chosen to avoid conflicts with macOS AirPlay Receiver which commonly uses port 5000. To change the port:
 
-1. Update `client/src/config/api.js` to change the default port
-2. Or set `REACT_APP_API_PORT` environment variable before starting the frontend
+1. Update the `PORT` variable in `.env` file
+2. Update `client/src/config/api.js` to match the new port
+3. Or set `REACT_APP_API_PORT` environment variable
 
 ### Permission Issues
 

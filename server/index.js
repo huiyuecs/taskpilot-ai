@@ -9,7 +9,7 @@ const githubRoutes = require('./routes/github');
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 const app = express();
-const PORT = parseInt(process.env.PORT, 10) || 5000;
+const PORT = parseInt(process.env.PORT, 10) || 5001;
 
 // Middleware
 app.use(cors({
@@ -26,6 +26,28 @@ app.use('/api/github', githubRoutes);
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'TaskPilot AI Server is running' });
+});
+
+// Root path handler
+app.get('/', (req, res) => {
+  if (process.env.NODE_ENV === 'production') {
+    // In production, serve the React app
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  } else {
+    // In development, show API info
+    res.json({
+      message: 'TaskPilot AI API Server',
+      status: 'running',
+      environment: process.env.NODE_ENV || 'development',
+      frontend: 'Please access the frontend at http://localhost:3000',
+      api: {
+        health: '/api/health',
+        codeSummary: '/api/code-summary',
+        github: '/api/github',
+        models: '/api/code-summary/models'
+      }
+    });
+  }
 });
 
 // Serve static files from React app in production
@@ -47,44 +69,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Function to find available port
-const findAvailablePort = (port, maxAttempts = 10) => {
-  // Ensure port is a number
-  const portNum = typeof port === 'string' ? parseInt(port, 10) : port;
-  
-  return new Promise((resolve, reject) => {
-    const server = require('net').createServer();
-    server.listen(portNum, () => {
-      const foundPort = server.address().port;
-      server.close(() => resolve(foundPort));
-    });
-    server.on('error', (err) => {
-      if (err.code === 'EADDRINUSE') {
-        if (maxAttempts > 0) {
-          // Ensure we're adding numbers, not concatenating strings
-          findAvailablePort(Number(portNum) + 1, maxAttempts - 1).then(resolve).catch(reject);
-        } else {
-          reject(new Error('No available ports found'));
-        }
-      } else {
-        reject(err);
-      }
-    });
-  });
-};
-
-// Start server on available port
-findAvailablePort(PORT)
-  .then((availablePort) => {
-    app.listen(availablePort, () => {
-      console.log(`🚀 Server is running on port ${availablePort}`);
-      if (availablePort !== PORT) {
-        console.log(`⚠️  Port ${PORT} was in use, using port ${availablePort} instead`);
-      }
-    });
-  })
-  .catch((err) => {
-    console.error('Failed to start server:', err);
-    process.exit(1);
-  });
+// Start server
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
+});
 
