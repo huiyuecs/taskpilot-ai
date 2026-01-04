@@ -1,0 +1,157 @@
+# TaskPilot AI
+
+GenAI Developer Productivity Platform - A modern platform for code analysis and GitHub repository management powered by OpenAI and GitHub APIs.
+
+## Features
+
+- 🤖 **AI Code Summary**: Get intelligent code summaries using OpenAI models (GPT-5.1, GPT-4o, GPT-4, etc.)
+- ⚙️ **Model Selection**: Choose from multiple AI models based on your needs
+- 🔗 **GitHub Integration**: Browse and analyze GitHub repositories
+- 📊 **Clean Dashboard**: Modern UI built with React and Tailwind CSS
+- 🐳 **Docker Support**: Easy deployment with Docker
+
+## Tech Stack
+
+### Frontend
+- React 18
+- Tailwind CSS
+- Axios
+
+### Backend
+- Express.js
+- OpenAI API
+- GitHub API
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- OpenAI API Key
+- GitHub Personal Access Token (optional, for private repos)
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd taskpilot-ai
+```
+
+2. Install dependencies:
+```bash
+npm run install-all
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and add your API keys:
+```
+OPENAI_API_KEY=your_openai_api_key_here
+GITHUB_TOKEN=your_github_token_here
+PORT=5000
+CLIENT_URL=http://localhost:3000
+```
+
+### Running the Application
+
+#### Development Mode
+
+Run both frontend and backend concurrently:
+```bash
+npm run dev
+```
+
+Or run them separately:
+
+Backend:
+```bash
+npm run server
+```
+
+Frontend:
+```bash
+npm run client
+```
+
+The application will be available at:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000
+
+#### Production Mode with Docker
+
+1. Build and run with Docker Compose:
+```bash
+docker-compose up --build
+```
+
+2. Or build and run with Docker:
+```bash
+docker build -t taskpilot-ai .
+docker run -p 5000:5000 --env-file .env taskpilot-ai
+```
+
+The application will be available at http://localhost:5000
+
+## API Endpoints
+
+### Code Summary
+- `GET /api/code-summary/models` - Get available AI models
+- `POST /api/code-summary` - Generate AI code summary
+  - Body: `{ code: string, language?: string, model?: string }`
+  - Available models: `gpt-5.1`, `gpt-4o`, `gpt-4-turbo`, `gpt-4`, `gpt-3.5-turbo`
+
+### GitHub
+- `GET /api/github/repos/:owner/:repo` - Get repository information
+- `GET /api/github/repos/:owner/:repo/contents/:path?` - Get repository contents
+- `GET /api/github/repos/:owner/:repo/commits` - Get repository commits
+- `GET /api/github/repos/:owner/:repo/languages` - Get repository languages
+- `GET /api/github/user/repos` - Get authenticated user's repositories
+
+### Health Check
+- `GET /api/health` - Server health status
+
+## Project Structure
+
+```
+taskpilot-ai/
+├── client/                 # React frontend
+│   ├── public/
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── App.js
+│   │   └── index.js
+│   ├── package.json
+│   └── tailwind.config.js
+├── server/                 # Express backend
+│   ├── config/             # Configuration files
+│   │   └── models.js       # AI models configuration
+│   ├── routes/             # API routes
+│   │   ├── codeSummary.js
+│   │   └── github.js
+│   ├── index.js
+│   └── package.json
+├── Dockerfile
+├── docker-compose.yml
+├── .env.example
+└── README.md
+```
+
+## Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `PORT` | Server port | No (default: 5000) |
+| `NODE_ENV` | Environment mode | No |
+| `OPENAI_API_KEY` | OpenAI API key | Yes |
+| `GITHUB_TOKEN` | GitHub personal access token | Optional |
+| `CLIENT_URL` | Frontend URL for CORS | No (default: http://localhost:3000) |
+
+## License
+
+MIT
+
